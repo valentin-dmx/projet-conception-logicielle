@@ -13,7 +13,9 @@ def test_agregation_ingredients_sans_appel_api():
     resultat = service.generer_liste_courses(ingredients, activer_prix=False)
 
     # tomates doivent être regroupées: 2 + 3 = 5
-    tomates = [a for a in resultat.articles if a.nom == "tomates" and a.unite == "pièces"]
+    tomates = [
+        a for a in resultat.articles if a.nom == "tomates" and a.unite == "pièces"
+    ]
     assert len(tomates) == 1
     assert tomates[0].quantite == 5.0
 
