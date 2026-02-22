@@ -21,3 +21,9 @@ def test_agregation_ingredients_sans_appel_api():
 
     # pas d'appel API donc pas de total estimé
     assert resultat.cout_total_estime is None
+
+
+def test_liste_vide():
+    service = ListeCoursesService()
+    res = service.generer_liste_courses([], activer_prix=False)
+    assert res.articles == []

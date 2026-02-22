@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from backend.services.liste_courses_service import ListeCoursesService
 
+
 router = APIRouter(prefix="/liste-courses", tags=["Panier"])
 service = ListeCoursesService()
 
@@ -25,7 +26,9 @@ def generer_liste_courses(body: ListeCoursesRequest):
         for i in body.ingredients
     ]
 
-    liste = service.generer_liste_courses(ingredients_dict, activer_prix=body.activer_prix)
+    liste = service.generer_liste_courses(
+        ingredients_dict, activer_prix=body.activer_prix
+    )
 
     return {
         "articles": [
