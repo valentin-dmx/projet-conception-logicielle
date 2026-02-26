@@ -16,18 +16,23 @@ class IngredientInput(BaseModel):
 
 class ListeCoursesRequest(BaseModel):
     ingredients: list[IngredientInput]
+    disponibles: list[IngredientInput] = []
     activer_prix: bool = True
 
 
 @router.post("")
 def generer_liste_courses(body: ListeCoursesRequest):
     ingredients_dict = [
-        {"nom": i.nom, "quantite": i.quantite, "unite": i.unite}
-        for i in body.ingredients
+        {"nom": i.nom, "quantite": i.quantite, "unite": i.unite} for i in body.ingredients
+    ]
+    disponibles_dict = [
+        {"nom": d.nom, "quantite": d.quantite, "unite": d.unite} for d in body.disponibles
     ]
 
     liste = service.generer_liste_courses(
-        ingredients_dict, activer_prix=body.activer_prix
+        ingredients_dict,
+        activer_prix=body.activer_prix,
+        disponibles=disponibles_dict,
     )
 
     return {
