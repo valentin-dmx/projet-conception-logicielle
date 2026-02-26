@@ -1,3 +1,5 @@
+from backend.business_object.ingredient import Ingredient
+from backend.business_object.liste_courses import ListeCourses
 from backend.dao.prix_api_dao import PrixApiDao
 from backend.dto.article_courses_dto import ArticleCoursesDto
 from backend.dto.liste_courses_dto import ListeCoursesDto
@@ -12,24 +14,25 @@ class ListeCoursesService:
         ingredients: list[dict],
         activer_prix: bool = True,
     ) -> ListeCoursesDto:
-        # clé = (nom normalisé, unité)
-        agregation: dict[tuple[str, str], float] = {}
+        # 1) Logique métier (agrégation) dans le BO
+        liste_bo = ListeCourses()
 
         for ingredient in ingredients:
-            nom = str(ingredient["nom"]).strip().lower()
-            unite = str(ingredient["unite"]).strip().lower()
-            quantite = float(ingredient["quantite"])
+            liste_bo.ajouter_ingredient(
+                Ingredient(
+                    nom=ingredient["nom"],
+                    quantite=ingredient["quantite"],
+                    unite=ingredient["unite"],
+                )
+            )
 
-            cle = (nom, unite)
-            agregation[cle] = agregation.get(cle, 0.0) + quantite
-
+        # 2) Conversion BO -> DTO
         articles = [
-            ArticleCoursesDto(nom=nom, quantite=quantite, unite=unite)
-            for (nom, unite), quantite in agregation.items()
+            ArticleCoursesDto(nom=i.nom, quantite=i.quantite, unite=i.unite)
+            for i in liste_bo.ingredients()
         ]
 
-        articles.sort(key=lambda a: (a.nom, a.unite))
-
+        # 3) Estimation coût total via API (orchestration dans le service)
         total = 0.0
         if activer_prix:
             for article in articles:
