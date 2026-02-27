@@ -1,7 +1,6 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class PlatDTO:
+class PlatDTO(BaseModel):
     id: int
     nom: str
