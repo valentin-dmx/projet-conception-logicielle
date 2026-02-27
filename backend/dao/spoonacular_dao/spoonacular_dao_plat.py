@@ -2,18 +2,15 @@ import os
 
 import requests
 
-<<<<<<< plat
 from backend.dto.ingredient_dto import IngredientDTO
 from backend.dto.plat_dto import PlatDTO
 
 
-class SpoonacularDAO:
+class SpoonacularDAOPlat(SpoonacularDAO):
     """
-    Data Access Object (DAO) pour interagir avec l'API Spoonacular.
-    Fournit des méthodes pour rechercher des plats et récupérer leurs informations.
-    """
+    Data Access Object (DAO) pour interagir avec l'API Spoonacular spécifiquement pour les plats.
+    Fournit des méthodes pour rechercher des plats, récupérer leurs informations et leurs ingrédients."""
 
-    BASE_URL = "https://api.spoonacular.com"
     NOMBRE_RESULTATS = 2
 =======
 
@@ -27,7 +24,6 @@ class SpoonacularDAO:
             raise RuntimeError("Variable d'environnement SPOONACULAR_API_KEY manquante")
 
     def _get(self, endpoint, params=None):
-<<<<<<< plat
         """
         Effectue une requête GET à l'API Spoonacular.
 
@@ -42,8 +38,6 @@ class SpoonacularDAO:
             dict
                 La réponse de l'API sous forme de dictionnaire.
         """
-=======
->>>>>>> develop
         if params is None:
             params = {}
 
@@ -54,7 +48,6 @@ class SpoonacularDAO:
         response.raise_for_status()
         return response.json()
 
-<<<<<<< plat
     def recherche_plat_nom(self, query, number=NOMBRE_RESULTATS):
         """
         Recherche des plats par leur nom.
