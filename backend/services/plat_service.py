@@ -1,16 +1,16 @@
 from backend.business_object.ingredient import Ingredient
 from backend.business_object.plat import Plat
-from backend.dao.spoonacular_dao import SpoonacularDAO
+from backend.dao.spoonacular_dao.spoonacular_dao_plat import SpoonacularDAOPlat
 from backend.services.historique_service import HistoriqueService
 
 
-class PlatService:
+class PlatService(SpoonacularDAOPlat):
     """
     Service de gestion des plats.
     """
 
     def __init__(self, dao=None, historique_service=None):
-        self.dao = dao or SpoonacularDAO()
+        self.dao = dao or SpoonacularDAOPlat()
         self.historique_service = historique_service or HistoriqueService()
 
     def rechercher_plat_nom(self, requete: str) -> list[Plat]:
@@ -26,12 +26,11 @@ class PlatService:
             list[Plat]
                 Une liste de plats correspondant à la requête.
         """
-        plats_dto = SpoonacularDAO().recherche_plat_nom(requete)
+        plats_dto = self.dao.recherche_plat_nom(requete)
         plats = [Plat(id=plat_dto.id, nom=plat_dto.nom) for plat_dto in plats_dto]
         id_plats = [plat.id for plat in plats]
 
-        HistoriqueService().ajouter_recherche_plat(requete, id_plats)
-
+        self.historique_service.ajouter_recherche_plat(requete, id_plats)
         return plats
 
     def information_plat(self, plat_id: int) -> Plat:
@@ -47,7 +46,7 @@ class PlatService:
             Plat
                 Le plat correspondant à l'ID fourni.
         """
-        plat_dto = SpoonacularDAO().information_plat(plat_id)
+        plat_dto = self.dao.information_plat(plat_id)
         plat = Plat(id=plat_dto.id, nom=plat_dto.nom)
 
         return plat
@@ -65,7 +64,7 @@ class PlatService:
             list[Ingredient]
                 Une liste d'ingrédients correspondant au plat fourni.
         """
-        ingredients_dto = SpoonacularDAO().get_plat_ingredients(plat_id)
+        ingredients_dto = self.dao.get_plat_ingredients(plat_id)
 
         return [
             Ingredient(
