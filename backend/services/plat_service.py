@@ -9,8 +9,9 @@ class PlatService:
     Service de gestion des plats.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, dao=None, historique_service=None):
+        self.dao = dao or SpoonacularDAO()
+        self.historique_service = historique_service or HistoriqueService()
 
     def rechercher_plat_nom(self, requete: str) -> list[Plat]:
         """
