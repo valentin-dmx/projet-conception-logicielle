@@ -2,6 +2,9 @@ import os
 
 import requests
 
+from backend.dto.ingredient_dto import IngredientDTO
+from backend.dto.plat_dto import PlatDTO
+
 
 class SpoonacularDAO:
     BASE_URL = "https://api.spoonacular.com"
@@ -22,8 +25,20 @@ class SpoonacularDAO:
         response.raise_for_status()
         return response.json()
 
-    def recherche_plat(self, query, number=2):
-        return self._get("/recipes/complexSearch", {"query": query, "number": number})
+    def recherche_plat_nom(self, query, number=2):
+        data = self._get("/recipes/complexSearch", {"query": query, "number": number})
+
+        return [
+            PlatDTO(id=plat["id"], nom=plat["title"])
+            for plat in data.get("results", [])
+        ]
+
+    def information_plat(self, recipe_id):
+        data = self._get(
+            f"/recipes/{recipe_id}/information", {"includeNutrition": False}
+        )
+
+        return PlatDTO(id=data["id"], nom=data["title"])
 
     def get_plat_ingredients(self, recipe_id):
         data = self._get(
@@ -31,6 +46,8 @@ class SpoonacularDAO:
         )
 
         return [
-            {"name": i["name"], "amount": i["amount"], "unit": i["unit"]}
-            for i in data.get("extendedIngredients", [])
+            IngredientDTO(
+                id=ing["id"], nom=ing["name"], quantite=ing["amount"], unite=ing["unit"]
+            )
+            for ing in data.get("extendedIngredients", [])
         ]
