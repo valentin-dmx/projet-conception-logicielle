@@ -1,9 +1,9 @@
 import os
 
-import requests
-
+from backend.dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
 from backend.dto.ingredient_dto import IngredientDTO
 from backend.dto.plat_dto import PlatDTO
+import requests
 
 
 class SpoonacularDAOPlat(SpoonacularDAO):
@@ -12,11 +12,7 @@ class SpoonacularDAOPlat(SpoonacularDAO):
     Fournit des méthodes pour rechercher des plats, récupérer leurs informations et leurs ingrédients."""
 
     NOMBRE_RESULTATS = 2
-=======
-
-class SpoonacularDAO:
     BASE_URL = "https://api.spoonacular.com"
->>>>>>> develop
 
     def __init__(self):
         self.api_key = os.environ.get("SPOONACULAR_API_KEY")
@@ -87,37 +83,18 @@ class SpoonacularDAO:
 
         return PlatDTO(id=data["id"], nom=data["title"])
 
-    def get_plat_ingredients(self, recipe_id):
-        """
-        Récupère les ingrédients d'un plat à partir de son ID.
-
-        Params
-        ------------
-            recipe_id: int
-                L'ID du plat dont on veut récupérer les ingrédients.
-        Return
-        ------------
-            list[IngredientDTO]
-                Une liste d'ingrédients correspondant au plat fourni.
-        """
-=======
     def recherche_plat(self, query, number=2):
         return self._get("/recipes/complexSearch", {"query": query, "number": number})
 
     def get_plat_ingredients(self, recipe_id):
->>>>>>> develop
+
         data = self._get(
             f"/recipes/{recipe_id}/information", {"includeNutrition": False}
         )
 
         return [
-<<<<<<< plat
             IngredientDTO(
                 id=ing["id"], nom=ing["name"], quantite=ing["amount"], unite=ing["unit"]
             )
             for ing in data.get("extendedIngredients", [])
-=======
-            {"name": i["name"], "amount": i["amount"], "unit": i["unit"]}
-            for i in data.get("extendedIngredients", [])
->>>>>>> develop
         ]
