@@ -3,6 +3,7 @@ revision = 3
 requires-python = ">=3.13"
 
 [[package]]
+<<<<<<< plat
 name = "annotated-types"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -12,6 +13,8 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> develop
 name = "certifi"
 version = "2026.1.4"
 source = { registry = "https://pypi.org/simple" }
@@ -62,6 +65,7 @@ wheels = [
 ]
 
 [[package]]
+<<<<<<< plat
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -71,6 +75,8 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> develop
 name = "idna"
 version = "3.11"
 source = { registry = "https://pypi.org/simple" }
@@ -80,6 +86,7 @@ wheels = [
 ]
 
 [[package]]
+<<<<<<< plat
 name = "iniconfig"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -107,12 +114,17 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> develop
 name = "projet-conception-logicielle"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+<<<<<<< plat
     { name = "pydantic" },
     { name = "pytest" },
+=======
+>>>>>>> develop
     { name = "python-dotenv" },
     { name = "requests" },
     { name = "ruff" },
@@ -120,14 +132,18 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+<<<<<<< plat
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pytest", specifier = ">=9.0.2" },
+=======
+>>>>>>> develop
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "ruff", specifier = ">=0.15.2" },
 ]
 
 [[package]]
+<<<<<<< plat
 name = "pydantic"
 version = "2.12.5"
 source = { registry = "https://pypi.org/simple" }
@@ -221,6 +237,8 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> develop
 name = "python-dotenv"
 version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -270,6 +288,7 @@ wheels = [
 ]
 
 [[package]]
+<<<<<<< plat
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -291,6 +310,8 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> develop
 name = "urllib3"
 version = "2.6.3"
 source = { registry = "https://pypi.org/simple" }

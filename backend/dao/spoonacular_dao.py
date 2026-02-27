@@ -2,6 +2,7 @@ import os
 
 import requests
 
+<<<<<<< plat
 from backend.dto.ingredient_dto import IngredientDTO
 from backend.dto.plat_dto import PlatDTO
 
@@ -14,6 +15,11 @@ class SpoonacularDAO:
 
     BASE_URL = "https://api.spoonacular.com"
     NOMBRE_RESULTATS = 2
+=======
+
+class SpoonacularDAO:
+    BASE_URL = "https://api.spoonacular.com"
+>>>>>>> develop
 
     def __init__(self):
         self.api_key = os.environ.get("SPOONACULAR_API_KEY")
@@ -21,6 +27,7 @@ class SpoonacularDAO:
             raise RuntimeError("Variable d'environnement SPOONACULAR_API_KEY manquante")
 
     def _get(self, endpoint, params=None):
+<<<<<<< plat
         """
         Effectue une requête GET à l'API Spoonacular.
 
@@ -35,6 +42,8 @@ class SpoonacularDAO:
             dict
                 La réponse de l'API sous forme de dictionnaire.
         """
+=======
+>>>>>>> develop
         if params is None:
             params = {}
 
@@ -45,6 +54,7 @@ class SpoonacularDAO:
         response.raise_for_status()
         return response.json()
 
+<<<<<<< plat
     def recherche_plat_nom(self, query, number=NOMBRE_RESULTATS):
         """
         Recherche des plats par leur nom.
@@ -97,13 +107,24 @@ class SpoonacularDAO:
             list[IngredientDTO]
                 Une liste d'ingrédients correspondant au plat fourni.
         """
+=======
+    def recherche_plat(self, query, number=2):
+        return self._get("/recipes/complexSearch", {"query": query, "number": number})
+
+    def get_plat_ingredients(self, recipe_id):
+>>>>>>> develop
         data = self._get(
             f"/recipes/{recipe_id}/information", {"includeNutrition": False}
         )
 
         return [
+<<<<<<< plat
             IngredientDTO(
                 id=ing["id"], nom=ing["name"], quantite=ing["amount"], unite=ing["unit"]
             )
             for ing in data.get("extendedIngredients", [])
+=======
+            {"name": i["name"], "amount": i["amount"], "unit": i["unit"]}
+            for i in data.get("extendedIngredients", [])
+>>>>>>> develop
         ]
