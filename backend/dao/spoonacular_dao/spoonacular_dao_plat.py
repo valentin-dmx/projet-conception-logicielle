@@ -87,7 +87,6 @@ class SpoonacularDAOPlat(SpoonacularDAO):
         return self._get("/recipes/complexSearch", {"query": query, "number": number})
 
     def get_plat_ingredients(self, recipe_id):
-
         data = self._get(
             f"/recipes/{recipe_id}/information", {"includeNutrition": False}
         )
