@@ -1,4 +1,4 @@
-class ArticleCoursesDto:
+class IngredientDTO:
     def __init__(
         self, nom: str, quantite: float, unite: str, prix_estime: float | None = None
     ):

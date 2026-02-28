@@ -2,7 +2,7 @@ from backend.business_object.ingredient import Ingredient
 from backend.business_object.inventaire import Inventaire
 from backend.business_object.liste_courses import ListeCourses
 from backend.dao.prix_api_dao import PrixApiDao
-from backend.dto.article_courses_dto import ArticleCoursesDto
+from backend.dto.ingredient_dto import IngredientDTO
 from backend.dto.liste_courses_dto import ListeCoursesDto
 
 
@@ -62,7 +62,7 @@ class ListeCoursesService:
 
         # 3) Conversion BO -> DTO
         articles = [
-            ArticleCoursesDto(nom=i.nom, quantite=i.quantite, unite=i.unite)
+            IngredientDTO(nom=i.nom, quantite=i.quantite, unite=i.unite)
             for i in liste_bo.ingredients()
         ]
 
