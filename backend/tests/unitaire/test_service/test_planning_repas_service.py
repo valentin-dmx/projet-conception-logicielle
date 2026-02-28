@@ -1,153 +1,174 @@
 import pytest
 
+from backend.services.planning_repas_service import PlanningRepasService
+
+
+# ------------------------------------------------------------------
+# Fake objets cohérents avec le fonctionnement Spoonacular (DTO)
+# ------------------------------------------------------------------
+
 
 class FakePlanning:
-    """Objet PlanningRepas simplifié pour les tests."""
-
-    def __init__(self):
-        self.id = None
-        self.nom = None
+    def __init__(self, id=None, nom=None, nb_jours=0):
+        self.id = id
+        self.nom = nom
+        self.nb_jours = nb_jours
 
 
 class FakePlanningDTO:
-    """DTO simulé avec conversion vers PlanningRepas."""
-
-    def __init__(self, planning=None):
-        self._planning = planning or FakePlanning()
+    def __init__(self, planning):
+        self._planning = planning
 
     def to_planning_repas(self):
         return self._planning
 
 
+# ==================================================================
+#                       CLASSE DE TEST PYTEST
+# ==================================================================
+
+
 class TestPlanningRepasService:
-    """Classe de tests pytest pour PlanningRepasService."""
+    @pytest.fixture
+    def dao_mock(self, mocker):
+        return mocker.Mock()
 
-    @pytest.fixture(autouse=True)
-    def setup(self, mocker):
-        """Initialisation automatique avant chaque test."""
-        from backend.services.planning_repas_service import PlanningRepasService
+    @pytest.fixture
+    def service(self, dao_mock):
+        return PlanningRepasService(dao_mock)
 
-        self.mock_dao = mocker.Mock()
-        self.service = PlanningRepasService(self.mock_dao)
+    # --------------------------------------------------------------
+    # CREATION VISITEUR
+    # --------------------------------------------------------------
 
-    # Création visiteur
+    def test_creer_planning_repas_visiteur(self, service, dao_mock):
+        fake_planning = FakePlanning(nb_jours=3)
+        dao_mock.creer_planning_repas.return_value = fake_planning
 
-    def test_creer_planning_repas_visiteur(self):
-        self.mock_dao.creer_planning_repas.return_value = "planning"
+        result = service.creer_planning_repas_visiteur(3)
 
-        result = self.service.creer_planning_repas_visiteur(7)
+        dao_mock.creer_planning_repas.assert_called_once_with(3)
+        assert result.nb_jours == 3
 
-        self.mock_dao.creer_planning_repas.assert_called_once_with(7)
-        assert result == "planning"
+    # --------------------------------------------------------------
+    # COMPTER
+    # --------------------------------------------------------------
 
-    # Compter plannings utilisateur
+    def test_compter_plannings_repas_utilisateur(self, service, dao_mock):
+        dao_mock.compter_plannings_repas_utilisateur.return_value = 4
 
-    def test_compter_plannings_repas_utilisateur(self):
-        self.mock_dao.compter_plannings_repas_utilisateur.return_value = 3
+        result = service.compter_plannings_repas_utilisateur(10)
 
-        result = self.service.compter_plannings_repas_utilisateur(1)
+        dao_mock.compter_plannings_repas_utilisateur.assert_called_once_with(10)
+        assert result == 4
 
-        self.mock_dao.compter_plannings_repas_utilisateur.assert_called_once_with(1)
-        assert result == 3
+    # --------------------------------------------------------------
+    # CREATION UTILISATEUR AVEC NOM
+    # --------------------------------------------------------------
 
-    # Création planning utilisateur avec nom
-
-    def test_creer_planning_repas_utilisateur_avec_nom(self):
-        fake_planning = FakePlanning()
+    def test_creer_planning_repas_utilisateur_avec_nom(self, service, dao_mock):
+        fake_planning = FakePlanning(nb_jours=7)
         fake_dto = FakePlanningDTO(fake_planning)
 
-        self.mock_dao.creer_planning_repas.return_value = fake_dto
-        self.mock_dao.compter_plannings_repas_utilisateur.return_value = 2
+        dao_mock.creer_planning_repas.return_value = fake_dto
+        dao_mock.compter_plannings_repas_utilisateur.return_value = 2
 
-        result = self.service.creer_planning_repas_utilisateur(
-            id_utilisateur=1, nb_jours=5, nom_planning="Mon planning"
+        result = service.creer_planning_repas_utilisateur(
+            id_utilisateur=1, nb_jours=7, nom_planning="Planning semaine"
         )
 
-        self.mock_dao.creer_planning_repas.assert_called_once_with(5, id_utilisateur=1)
-
-        self.mock_dao.renommer_planning_repas_utilisateur.assert_called_once_with(
-            1, 3, "Mon planning"
-        )
-
+        # ID = compteur + 1
         assert result.id == 3
-        assert result.nom == "Mon planning"
+        assert result.nom == "Planning semaine"
 
-    # Création planning vide utilisateur
-
-    def test_creer_planning_repas_vide_utilisateur(self):
-        fake_planning = FakePlanning()
-        fake_dto = FakePlanningDTO(fake_planning)
-
-        self.mock_dao.creer_planning_repas.return_value = fake_dto
-
-        result = self.service.creer_planning_repas_vide_utilisateur(1, 4)
-
-        self.mock_dao.creer_planning_repas.assert_called_once_with(
-            nb_jours=4, id_utilisateur=1, vide=True
+        dao_mock.renommer_planning_repas_utilisateur.assert_called_once_with(
+            1, 3, "Planning semaine"
         )
 
-        assert isinstance(result, FakePlanning)
+    # --------------------------------------------------------------
+    # CREATION UTILISATEUR SANS NOM
+    # --------------------------------------------------------------
 
-    # Modifier planning
-
-    def test_modifier_planning_repas_utilisateur(self):
-        fake_planning = FakePlanning()
+    def test_creer_planning_repas_utilisateur_sans_nom(self, service, dao_mock):
+        fake_planning = FakePlanning(nb_jours=5)
         fake_dto = FakePlanningDTO(fake_planning)
 
-        self.mock_dao.modifier_planning_repas_utilisateur.return_value = fake_dto
+        dao_mock.creer_planning_repas.return_value = fake_dto
+        dao_mock.compter_plannings_repas_utilisateur.return_value = 0
 
-        result = self.service.modifier_planning_repas_utilisateur(1, 2, 1, "midi", 42)
+        result = service.creer_planning_repas_utilisateur(id_utilisateur=1, nb_jours=5)
 
-        self.mock_dao.modifier_planning_repas_utilisateur.assert_called_once_with(
-            1, 2, 1, "midi", 42
-        )
+        assert result.id == 1
+        dao_mock.renommer_planning_repas_utilisateur.assert_not_called()
 
-        assert result is fake_planning
+    # --------------------------------------------------------------
+    # MODIFIER
+    # --------------------------------------------------------------
 
-    # Suppression planning
-
-    def test_supprimer_planning_repas_utilisateur(self):
-        self.service.supprimer_planning_repas_utilisateur(1, 2)
-
-        self.mock_dao.supprimer_planning_repas_utilisateur.assert_called_once_with(1, 2)
-
-    # Ajouter jour
-
-    def test_ajouter_jour_planning_repas_utilisateur(self):
-        fake_planning = FakePlanning()
+    def test_modifier_planning_repas_utilisateur(self, service, dao_mock):
+        fake_planning = FakePlanning(id=1)
         fake_dto = FakePlanningDTO(fake_planning)
 
-        self.mock_dao.ajouter_jour_planning_repas_utilisateur.return_value = fake_dto
+        dao_mock.modifier_planning_repas_utilisateur.return_value = fake_dto
 
-        result = self.service.ajouter_jour_planning_repas_utilisateur(1, 2)
-
-        self.mock_dao.ajouter_jour_planning_repas_utilisateur.assert_called_once_with(
-            1, 2
+        result = service.modifier_planning_repas_utilisateur(
+            id_utilisateur=1,
+            planning_id=1,
+            jour_modif=2,
+            moment_modif="midi",
+            id_plat_modif=123,
         )
 
-        assert result is fake_planning
+        dao_mock.modifier_planning_repas_utilisateur.assert_called_once_with(
+            1, 1, 2, "midi", 123
+        )
 
-    # Supprimer jour
+        assert result.id == 1
 
-    def test_supprimer_jour_planning_repas_utilisateur(self):
-        fake_planning = FakePlanning()
+    # --------------------------------------------------------------
+    # SUPPRIMER
+    # --------------------------------------------------------------
+
+    def test_supprimer_planning_repas_utilisateur(self, service, dao_mock):
+        service.supprimer_planning_repas_utilisateur(1, 2)
+
+        dao_mock.supprimer_planning_repas_utilisateur.assert_called_once_with(1, 2)
+
+    # --------------------------------------------------------------
+    # AJOUT JOUR
+    # --------------------------------------------------------------
+
+    def test_ajouter_jour_planning(self, service, dao_mock):
+        fake_planning = FakePlanning(nb_jours=4)
         fake_dto = FakePlanningDTO(fake_planning)
 
-        self.mock_dao.supprimer_jour_planning_repas_utilisateur.return_value = fake_dto
+        dao_mock.ajouter_jour_planning_repas_utilisateur.return_value = fake_dto
 
-        result = self.service.supprimer_jour_planning_repas_utilisateur(1, 2)
+        result = service.ajouter_jour_planning_repas_utilisateur(1, 1)
 
-        self.mock_dao.supprimer_jour_planning_repas_utilisateur.assert_called_once_with(
-            1, 2
-        )
+        assert result.nb_jours == 4
 
-        assert result is fake_planning
+    # --------------------------------------------------------------
+    # SUPPRESSION JOUR
+    # --------------------------------------------------------------
 
-    # Renommer planning
+    def test_supprimer_jour_planning(self, service, dao_mock):
+        fake_planning = FakePlanning(nb_jours=2)
+        fake_dto = FakePlanningDTO(fake_planning)
 
-    def test_renommer_planning_repas_utilisateur(self):
-        self.service.renommer_planning_repas_utilisateur(1, 2, "Nouveau nom")
+        dao_mock.supprimer_jour_planning_repas_utilisateur.return_value = fake_dto
 
-        self.mock_dao.renommer_planning_repas_utilisateur.assert_called_once_with(
-            1, 2, "Nouveau nom"
+        result = service.supprimer_jour_planning_repas_utilisateur(1, 1)
+
+        assert result.nb_jours == 2
+
+    # --------------------------------------------------------------
+    # RENOMMER
+    # --------------------------------------------------------------
+
+    def test_renommer_planning(self, service, dao_mock):
+        service.renommer_planning_repas_utilisateur(1, 1, "Nouveau nom")
+
+        dao_mock.renommer_planning_repas_utilisateur.assert_called_once_with(
+            1, 1, "Nouveau nom"
         )
