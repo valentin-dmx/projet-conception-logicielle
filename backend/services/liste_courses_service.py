@@ -25,7 +25,7 @@ class ListeCoursesService:
     ) -> ListeCoursesDto:
         """
         Génère une liste de courses à partir des ingrédients fournis, en option en soustrayant
-        les ingrédients disponibles (inventaire en fonction des unités) 
+        les ingrédients disponibles (inventaire en fonction des unités)
         et en estimant le coût total.
 
         Params
