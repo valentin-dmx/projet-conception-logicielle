@@ -32,7 +32,9 @@ class TestListeCoursesService:
     Tests unitaires pour ListeCoursesService.
     """
 
-    def test_agregation_ingredients_sans_appel_api(self, liste_courses_service, prix_api):
+    def test_agregation_ingredients_sans_appel_api(
+        self, liste_courses_service, prix_api
+    ):
         """
         Vérifie l'agrégation des ingrédients (ex: "Tomates" + "tomates")
         et l'absence d'appel à l'API quand activer_prix=False.
@@ -43,9 +45,13 @@ class TestListeCoursesService:
             {"nom": "pâtes", "quantite": 500, "unite": "g"},
         ]
 
-        resultat = liste_courses_service.generer_liste_courses(ingredients, activer_prix=False)
+        resultat = liste_courses_service.generer_liste_courses(
+            ingredients, activer_prix=False
+        )
 
-        tomates = [a for a in resultat.articles if a.nom == "tomates" and a.unite == "pièces"]
+        tomates = [
+            a for a in resultat.articles if a.nom == "tomates" and a.unite == "pièces"
+        ]
         assert len(tomates) == 1
         assert tomates[0].quantite == 5.0
 
@@ -96,22 +102,29 @@ class TestListeCoursesService:
             ),
         ],
     )
-    def test_pas_agregation_si_unite_differente(self, liste_courses_service, prix_api, ingredients, attendu):
+    def test_pas_agregation_si_unite_differente(
+        self, liste_courses_service, prix_api, ingredients, attendu
+    ):
         """
         Vérifie que deux ingrédients de même nom mais unités différentes ne sont pas agrégés.
         """
-        resultat = liste_courses_service.generer_liste_courses(ingredients, activer_prix=False)
+        resultat = liste_courses_service.generer_liste_courses(
+            ingredients, activer_prix=False
+        )
         data = {(a.nom, a.unite): a.quantite for a in resultat.articles}
         assert data == attendu
         prix_api.obtenir_prix.assert_not_called()
 
-    def test_estimation_prix_total_et_prix_par_article(self, liste_courses_service, prix_api):
+    def test_estimation_prix_total_et_prix_par_article(
+        self, liste_courses_service, prix_api
+    ):
         """
         Vérifie que si activer_prix=True :
         - chaque article reçoit un prix_estime si le prix est trouvé
         - cout_total_estime correspond à la somme des prix
         - l'API est appelée une fois par article agrégé.
         """
+
         def fake_prix(nom: str):
             mapping = {"tomates": (7.5, "EUR"), "pates": (4.0, "EUR")}
             return mapping.get(nom)
@@ -124,7 +137,9 @@ class TestListeCoursesService:
             {"nom": "pates", "quantite": 500, "unite": "g"},
         ]
 
-        resultat = liste_courses_service.generer_liste_courses(ingredients, activer_prix=True)
+        resultat = liste_courses_service.generer_liste_courses(
+            ingredients, activer_prix=True
+        )
 
         assert resultat.cout_total_estime == 11.5
         data_prix = {a.nom: getattr(a, "prix_estime", None) for a in resultat.articles}
@@ -137,6 +152,7 @@ class TestListeCoursesService:
         """
         Vérifie que si un article n'a pas de prix (None), il est ignoré dans le total estimé.
         """
+
         def fake_prix(nom: str):
             if nom == "tomates":
                 return (3.0, "EUR")
@@ -149,14 +165,18 @@ class TestListeCoursesService:
             {"nom": "pates", "quantite": 500, "unite": "g"},
         ]
 
-        resultat = liste_courses_service.generer_liste_courses(ingredients, activer_prix=True)
+        resultat = liste_courses_service.generer_liste_courses(
+            ingredients, activer_prix=True
+        )
 
         assert resultat.cout_total_estime == 3.0
         data_prix = {a.nom: getattr(a, "prix_estime", None) for a in resultat.articles}
         assert data_prix["tomates"] == 3.0
         assert data_prix["pates"] is None
 
-    def test_inventaire_superieur_au_besoin_pas_de_negatif(self, liste_courses_service, prix_api):
+    def test_inventaire_superieur_au_besoin_pas_de_negatif(
+        self, liste_courses_service, prix_api
+    ):
         """
         Vérifie que si l'inventaire contient plus que le besoin, la quantité à acheter n'est pas négative
         (0 ou suppression de l'article selon le comportement du BO).
@@ -175,7 +195,9 @@ class TestListeCoursesService:
         prix_api.obtenir_prix.assert_not_called()
 
     @pytest.mark.parametrize("disponibles", [None, []])
-    def test_disponibles_vide_equivaut_aucun_inventaire(self, liste_courses_service, prix_api, disponibles):
+    def test_disponibles_vide_equivaut_aucun_inventaire(
+        self, liste_courses_service, prix_api, disponibles
+    ):
         """
         Vérifie que disponibles=None et disponibles=[] donnent le même résultat
         (dans le service, `if disponibles:` traite [] comme False).

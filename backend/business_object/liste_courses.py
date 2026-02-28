@@ -17,7 +17,9 @@ class ListeCourses:
         if cle in self._ingredients:
             self._ingredients[cle].ajouter(ingredient)
         else:
-            self._ingredients[cle] = Ingredient(ingredient.nom, ingredient.quantite, ingredient.unite)
+            self._ingredients[cle] = Ingredient(
+                ingredient.nom, ingredient.quantite, ingredient.unite
+            )
 
     def ingredients(self) -> list[Ingredient]:
         res = list(self._ingredients.values())
