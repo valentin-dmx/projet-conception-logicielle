@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-from backend.business_object.jour_repas import JourRepas
 from backend.business_object.planning_repas import PlanningRepas
 from backend.dto.jour_repas_dto import JourRepasDTO
 
@@ -18,21 +17,12 @@ class PlanningRepasDTO(BaseModel):
 
     @classmethod
     def from_planning_repas(cls, planning_repas: PlanningRepas) -> "PlanningRepasDTO":
-        jours_dto = []
-        for i in range(1, planning_repas.nb_jours + 1):
-            jour = getattr(planning_repas, f"jour_{i}")
-            jour_dto = JourRepasDTO(
-                petit_dejeuner=jour.petit_dejeuner,
-                dejeuner=jour.dejeuner,
-                diner=jour.diner,
-            )
-            jours_dto.append(jour_dto)
-        return PlanningRepasDTO(
+        return cls(
             id_utilisateur=planning_repas.id_utilisateur,
             id=planning_repas.id,
             nom=planning_repas.nom,
             nb_jours=planning_repas.nb_jours,
-            jours=jours_dto,
+            jours=[JourRepasDTO.from_jour_repas(jour) for jour in planning_repas.jours],
         )
 
     def to_planning_repas(self) -> "PlanningRepas":
@@ -42,11 +32,5 @@ class PlanningRepasDTO(BaseModel):
             nom=self.nom,
             nb_jours=self.nb_jours,
         )
-        for i, jour_dto in enumerate(self.jours, start=1):
-            jour = JourRepas(
-                petit_dejeuner=jour_dto.petit_dejeuner,
-                dejeuner=jour_dto.dejeuner,
-                diner=jour_dto.diner,
-            )
-            setattr(planning_repas, f"jour_{i}", jour)
+        planning_repas.jours = [jour_dto.to_jour_repas() for jour_dto in self.jours]
         return planning_repas
