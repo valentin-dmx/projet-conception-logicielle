@@ -12,14 +12,9 @@ class PlanningRepas:
         self.id = id
         self.nom = nom
         self.nb_jours = nb_jours
+        self.jours = []
         for i in range(1, nb_jours + 1):
-            setattr(self, f"jour_{i}", JourRepas())
+            self.jours.append(JourRepas(id_utilisateur, id, nom, i))
 
     def __str__(self):
-        jours_str = ", ".join(
-            [
-                f"jour_{i}={getattr(self, f'jour_{i}')} "
-                for i in range(1, self.nb_jours + 1)
-            ]
-        )
-        return f"PlanningRepas(id_utilisateur={self.id_utilisateur}, id={self.id}, nom={self.nom}, nb_jours={self.nb_jours}, {jours_str})"
+        return f"PlanningRepas(id_utilisateur={self.id_utilisateur}, id={self.id}, nom={self.nom}, nb_jours={self.nb_jours}, jours={self.jours})"
