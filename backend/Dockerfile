@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir fastapi "uvicorn[standard]" requests
 
-COPY backend /app/backend
+COPY . /app
 
 EXPOSE 8000
 
