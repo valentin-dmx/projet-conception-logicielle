@@ -1,7 +1,7 @@
 import requests
 
 
-class OpenPricesDao:
+class OpenFoodFactsDao:
     BASE_URL = "https://prices.openfoodfacts.org/api/v1"
 
     def __init__(self):
