@@ -3,16 +3,17 @@ Tests unitaires du service ListeCoursesService.
 """
 
 import pytest
+from unittest.mock import Mock
 
 from backend.services.liste_courses_service import ListeCoursesService
 
 
 @pytest.fixture
-def prix_api(mocker):
+def prix_api():
     """
     Mock du DAO .
     """
-    dao = mocker.Mock()
+    dao = Mock()
     dao.obtenir_prix.return_value = None
     return dao
 
