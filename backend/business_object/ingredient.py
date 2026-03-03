@@ -31,6 +31,4 @@ class Ingredient:
         return Ingredient(self.nom, reste, self.unite)
 
     def __str__(self) -> str:
-        return (
-            f"Ingredient(nom={self.nom}, quantite={self.quantite}, unite={self.unite})"
-        )
+        return f"Ingredient(nom={self.nom}, quantite={self.quantite}, unite={self.unite})"

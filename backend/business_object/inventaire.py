@@ -14,9 +14,7 @@ class Inventaire:
         if cle in self._stock:
             self._stock[cle].ajouter(ingredient)
         else:
-            self._stock[cle] = Ingredient(
-                ingredient.nom, ingredient.quantite, ingredient.unite
-            )
+            self._stock[cle] = Ingredient(ingredient.nom, ingredient.quantite, ingredient.unite)
 
     def obtenir_ingredient(self, nom: str, unite: str) -> Ingredient | None:
         cle = (str(nom).strip().lower(), str(unite).strip().lower())
