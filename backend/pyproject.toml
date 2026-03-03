@@ -8,6 +8,8 @@ dependencies = [
     "fastapi>=0.110",
     "uvicorn>=0.27",
     "requests>=2.31",
+    "python-dotenv>=1.2.2",
+    "psycopg2>=2.9.11",
 ]
 
 [dependency-groups]
