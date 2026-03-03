@@ -2,8 +2,9 @@
 Tests unitaires du service ListeCoursesService.
 """
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 from backend.services.liste_courses_service import ListeCoursesService
 
