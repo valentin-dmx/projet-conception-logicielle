@@ -1,12 +1,12 @@
-from unittest import TestCase
+import pytest
 
 from business_object.utilisateur import Utilisateur
 
 
-class TestUtilisateur(TestCase):
-    def test_validation_ok(self):
-        self.assertEqual(Utilisateur.valider_nom_utilisateur("john"), "john")
+def test_validation_ok():
+    assert Utilisateur.valider_nom_utilisateur("john") == "john"
 
-    def test_validation_ko(self):
-        with self.assertRaises(ValueError):
-            Utilisateur.valider_nom_utilisateur("a")
+
+def test_validation_ko():
+    with pytest.raises(ValueError):
+        Utilisateur.valider_nom_utilisateur("a")
