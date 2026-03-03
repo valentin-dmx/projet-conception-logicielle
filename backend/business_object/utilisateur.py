@@ -1,15 +1,10 @@
 class Utilisateur:
-    def __init__(self, id: int | None, nom_utilisateur: str, mot_de_passe_hash: str):
+    def __init__(self, id: int | None, nom_utilisateur: str):
         self.id = id
         self.nom_utilisateur = nom_utilisateur
-        self.mot_de_passe_hash = mot_de_passe_hash
 
     def __repr__(self) -> str:
-        return (
-            f"Utilisateur(id={self.id!r}, "
-            f"nom_utilisateur={self.nom_utilisateur!r}, "
-            f"mot_de_passe_hash={self.mot_de_passe_hash!r})"
-        )
+        return f"Utilisateur(id={self.id!r}, nom_utilisateur={self.nom_utilisateur!r})"
 
     @staticmethod
     def valider_nom_utilisateur(nom_utilisateur: str) -> bool:
