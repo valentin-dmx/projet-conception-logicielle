@@ -21,7 +21,9 @@ class UtilisateurService:
     # Création
     # -------------------------
 
-    def creer_utilisateur(self, nom_utilisateur: str, mot_de_passe: str) -> Utilisateur:
+    def creer_utilisateur(
+        self, nom_utilisateur: str, mot_de_passe: str, role: str
+    ) -> Utilisateur:
         if self.utilisateur_dao.verifier_nom_utilisateur_existant(nom_utilisateur):
             raise UtilisateurAlreadyExistsError(
                 f"Le nom d'utilisateur '{nom_utilisateur}' existe déjà."
@@ -30,6 +32,7 @@ class UtilisateurService:
         utilisateur = Utilisateur(
             id=None,
             nom_utilisateur=nom_utilisateur,
+            role=role,
         )
 
         try:

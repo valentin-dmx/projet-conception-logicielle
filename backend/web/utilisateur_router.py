@@ -1,23 +1,21 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from dao.exceptions import (
-    InvalidPasswordError,
     NotFoundError,
     UtilisateurAlreadyExistsError,
 )
 from dto.utilisateur_dto import (
-    UtilisateurConnectDTO,
     UtilisateurCreateDTO,
     UtilisateurResponseDTO,
 )
 from services.utilisateur_service import UtilisateurService
+from utils.security_dependencies import get_current_admin, get_current_user
 
 
 utilisateur_router = APIRouter(
     prefix="/utilisateurs",
-    tags=["utilisateurs"],
+    tags=["Utilisateurs"],
 )
-
 
 # -------------------------
 # Création
@@ -36,44 +34,13 @@ def creer_utilisateur(utilisateur_dto: UtilisateurCreateDTO):
         utilisateur = service.creer_utilisateur(
             nom_utilisateur=utilisateur_dto.nom_utilisateur,
             mot_de_passe=utilisateur_dto.mot_de_passe,
+            role="user",
         )
         return utilisateur
 
     except UtilisateurAlreadyExistsError as e:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=str(e),
-        ) from e
-
-
-# -------------------------
-# Authentification
-# -------------------------
-
-
-@utilisateur_router.post(
-    "/connect",
-    response_model=UtilisateurResponseDTO,
-)
-def se_connecter(utilisateur_dto: UtilisateurConnectDTO):
-    service = UtilisateurService.of_context()
-
-    try:
-        utilisateur = service.authentifier(
-            nom_utilisateur=utilisateur_dto.nom_utilisateur,
-            mot_de_passe=utilisateur_dto.mot_de_passe,
-        )
-        return utilisateur
-
-    except NotFoundError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e),
-        ) from e
-
-    except InvalidPasswordError as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
             detail=str(e),
         ) from e
 
@@ -87,7 +54,7 @@ def se_connecter(utilisateur_dto: UtilisateurConnectDTO):
     "/",
     response_model=list[UtilisateurResponseDTO],
 )
-def lister_utilisateurs():
+def lister_utilisateurs(_=Depends(get_current_user)):  # noqa: B008
     service = UtilisateurService.of_context()
     return service.lister_utilisateurs()
 
@@ -96,7 +63,7 @@ def lister_utilisateurs():
     "/{id}",
     response_model=UtilisateurResponseDTO,
 )
-def trouver_utilisateur(id: int):
+def trouver_utilisateur(id: int, _=Depends(get_current_user)):  # noqa: B008
     service = UtilisateurService.of_context()
 
     try:
@@ -117,7 +84,14 @@ def trouver_utilisateur(id: int):
     "/{id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def supprimer_utilisateur(id: int):
+@utilisateur_router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def supprimer_utilisateur(
+    id: int,
+    _=Depends(get_current_admin),  # noqa: B008
+):
     service = UtilisateurService.of_context()
 
     try:
