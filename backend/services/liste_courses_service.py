@@ -1,9 +1,9 @@
-from backend.business_object.ingredient import Ingredient
-from backend.business_object.inventaire import Inventaire
-from backend.business_object.liste_courses import ListeCourses
-from backend.dto.ingredient_dto import IngredientDTO
-from backend.dto.liste_courses_dto import ListeCoursesDto
-from backend.services.prix_service import PrixService
+from business_object.ingredient import Ingredient
+from business_object.inventaire import Inventaire
+from business_object.liste_courses import ListeCourses
+from dto.ingredient_dto import IngredientDTO
+from dto.liste_courses_dto import ListeCoursesDto
+from services.prix_service import PrixService
 
 
 class ListeCoursesService:

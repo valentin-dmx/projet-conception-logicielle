@@ -1,4 +1,4 @@
-from backend.dto.ingredient_dto import IngredientDTO
+from dto.ingredient_dto import IngredientDTO
 
 
 class ListeCoursesDto:
