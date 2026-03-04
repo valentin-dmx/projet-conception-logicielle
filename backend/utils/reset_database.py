@@ -58,6 +58,7 @@ class ResetDatabase(metaclass=Singleton):
                     },
                 )
 
+        print("Succès de la réinitialisation de la base de données")
         return True
 
 
