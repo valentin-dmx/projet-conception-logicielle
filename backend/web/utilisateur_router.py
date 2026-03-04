@@ -1,23 +1,27 @@
 from fastapi import APIRouter, HTTPException, status
 
-from business_object.utilisateur import Utilisateur
 from dao.exceptions import (
-    DatabaseCreationError,
     InvalidPasswordError,
     NotFoundError,
+    UtilisateurAlreadyExistsError,
 )
-from dao.utilisateur_dao import UtilisateurDao
 from dto.utilisateur_dto import (
     UtilisateurConnectDTO,
     UtilisateurCreateDTO,
     UtilisateurResponseDTO,
 )
+from services.utilisateur_service import UtilisateurService
 
 
 utilisateur_router = APIRouter(
     prefix="/utilisateurs",
-    tags=["Utilisateurs"],
+    tags=["utilisateurs"],
 )
+
+
+# -------------------------
+# Création
+# -------------------------
 
 
 @utilisateur_router.post(
@@ -26,44 +30,36 @@ utilisateur_router = APIRouter(
     status_code=status.HTTP_201_CREATED,
 )
 def creer_utilisateur(utilisateur_dto: UtilisateurCreateDTO):
-    """Créer un nouvel utilisateur"""
-    utilisateur_dao = UtilisateurDao()
-
-    # Vérifier si le nom d'utilisateur existe déjà
-    if utilisateur_dao.verifier_nom_utilisateur_existant(
-        utilisateur_dto.nom_utilisateur
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Le nom d'utilisateur existe déjà.",
-        )
-
-    utilisateur = Utilisateur(
-        id=None,
-        nom_utilisateur=utilisateur_dto.nom_utilisateur,
-    )
+    service = UtilisateurService.of_context()
 
     try:
-        utilisateur_dao.creer(
-            utilisateur=utilisateur,
+        utilisateur = service.creer_utilisateur(
+            nom_utilisateur=utilisateur_dto.nom_utilisateur,
             mot_de_passe=utilisateur_dto.mot_de_passe,
         )
-    except DatabaseCreationError as e:
+        return utilisateur
+
+    except UtilisateurAlreadyExistsError as e:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_409_CONFLICT,
             detail=str(e),
         ) from e
 
-    return utilisateur
+
+# -------------------------
+# Authentification
+# -------------------------
 
 
-@utilisateur_router.post("/connect", response_model=UtilisateurResponseDTO)
+@utilisateur_router.post(
+    "/connect",
+    response_model=UtilisateurResponseDTO,
+)
 def se_connecter(utilisateur_dto: UtilisateurConnectDTO):
-    """Authentifier un utilisateur"""
-    utilisateur_dao = UtilisateurDao()
+    service = UtilisateurService.of_context()
 
     try:
-        utilisateur = utilisateur_dao.se_connecter(
+        utilisateur = service.authentifier(
             nom_utilisateur=utilisateur_dto.nom_utilisateur,
             mot_de_passe=utilisateur_dto.mot_de_passe,
         )
@@ -82,38 +78,54 @@ def se_connecter(utilisateur_dto: UtilisateurConnectDTO):
         ) from e
 
 
-@utilisateur_router.get("/", response_model=list[UtilisateurResponseDTO])
+# -------------------------
+# Lecture
+# -------------------------
+
+
+@utilisateur_router.get(
+    "/",
+    response_model=list[UtilisateurResponseDTO],
+)
 def lister_utilisateurs():
-    """Lister tous les utilisateurs"""
-    utilisateur_dao = UtilisateurDao()
-    return utilisateur_dao.lister_tous()
+    service = UtilisateurService.of_context()
+    return service.lister_utilisateurs()
 
 
-@utilisateur_router.get("/{id}", response_model=UtilisateurResponseDTO)
-def trouver_utilisateur_par_id(id: int):
-    """Trouver un utilisateur par son identifiant"""
-    utilisateur_dao = UtilisateurDao()
-    utilisateur = utilisateur_dao.trouver_par_id(id)
+@utilisateur_router.get(
+    "/{id}",
+    response_model=UtilisateurResponseDTO,
+)
+def trouver_utilisateur(id: int):
+    service = UtilisateurService.of_context()
 
-    if utilisateur is None:
+    try:
+        return service.trouver_par_id(id)
+    except NotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Utilisateur non trouvé.",
-        )
-
-    return utilisateur
+            detail=str(e),
+        ) from e
 
 
-@utilisateur_router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+# -------------------------
+# Suppression
+# -------------------------
+
+
+@utilisateur_router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 def supprimer_utilisateur(id: int):
-    """Supprimer un utilisateur"""
-    utilisateur_dao = UtilisateurDao()
+    service = UtilisateurService.of_context()
 
-    if not utilisateur_dao.verifier_id_existant(id):
+    try:
+        service.supprimer_utilisateur(id)
+    except NotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Utilisateur non trouvé.",
-        )
+            detail=str(e),
+        ) from e
 
-    utilisateur_dao.supprimer(id)
     return None
