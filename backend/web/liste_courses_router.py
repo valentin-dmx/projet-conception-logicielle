@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from backend.services.liste_courses_service import ListeCoursesService
+from services.liste_courses_service import ListeCoursesService
 
 
 router = APIRouter(prefix="/liste-courses", tags=["Panier"])

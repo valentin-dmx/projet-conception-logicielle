@@ -1,5 +1,5 @@
-from backend.business_object.ingredient import Ingredient
-from backend.business_object.inventaire import Inventaire
+from business_object.ingredient import Ingredient
+from business_object.inventaire import Inventaire
 
 
 class ListeCourses:
