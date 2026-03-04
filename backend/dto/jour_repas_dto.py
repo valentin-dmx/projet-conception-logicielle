@@ -1,4 +1,4 @@
-from backend.business_object.jour_repas import JourRepas
+from business_object.jour_repas import JourRepas
 
 
 class JourRepasDTO:

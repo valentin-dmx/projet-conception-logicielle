@@ -1,8 +1,8 @@
 import pytest
 
-from backend.business_object.ingredient import Ingredient
-from backend.business_object.plat import Plat
-from backend.services.plat_service import PlatService
+from business_object.ingredient import Ingredient
+from business_object.plat import Plat
+from services.plat_service import PlatService
 
 
 @pytest.fixture

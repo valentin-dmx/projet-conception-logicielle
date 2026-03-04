@@ -1,6 +1,6 @@
-from backend.dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
-from backend.dto.ingredient_dto import IngredientDTO
-from backend.dto.plat_dto import PlatDTO
+from dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
+from dto.ingredient_dto import IngredientDTO
+from dto.plat_dto import PlatDTO
 
 
 class SpoonacularDAOPlat(SpoonacularDAO):

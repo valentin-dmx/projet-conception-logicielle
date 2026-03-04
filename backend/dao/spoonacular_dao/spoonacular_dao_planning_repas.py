@@ -1,6 +1,6 @@
-from backend.business_object.jour_repas import JourRepas
-from backend.business_object.planning_repas import PlanningRepas
-from backend.dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
+from business_object.jour_repas import JourRepas
+from business_object.planning_repas import PlanningRepas
+from dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
 
 
 class SpoonacularDAOPlanningRepas(SpoonacularDAO):

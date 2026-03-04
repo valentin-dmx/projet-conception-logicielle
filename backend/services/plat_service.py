@@ -1,6 +1,6 @@
-from backend.business_object.ingredient import Ingredient
-from backend.business_object.plat import Plat
-from backend.dao.spoonacular_dao.spoonacular_dao_plat import SpoonacularDAOPlat
+from business_object.ingredient import Ingredient
+from business_object.plat import Plat
+from dao.spoonacular_dao.spoonacular_dao_plat import SpoonacularDAOPlat
 
 
 # from backend.services.historique_service import HistoriqueService
@@ -14,7 +14,7 @@ class PlatService(SpoonacularDAOPlat):
     def __init__(self, dao=None):
         self.dao = dao or SpoonacularDAOPlat()
         # self.historique_service = historique_service or HistoriqueService()
-        # en argument historique_service=None
+        # en argument: historique_service=None
 
     def rechercher_plat_nom(self, requete: str) -> list[Plat]:
         """
