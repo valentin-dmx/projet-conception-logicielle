@@ -2,17 +2,19 @@
 Tests unitaires du service ListeCoursesService.
 """
 
+from unittest.mock import Mock
+
 import pytest
 
-from backend.services.liste_courses_service import ListeCoursesService
+from services.liste_courses_service import ListeCoursesService
 
 
 @pytest.fixture
-def prix_api(mocker):
+def prix_api():
     """
     Mock du DAO .
     """
-    dao = mocker.Mock()
+    dao = Mock()
     dao.obtenir_prix.return_value = None
     return dao
 
@@ -69,7 +71,8 @@ class TestListeCoursesService:
 
     def test_detection_ingredients_disponibles(self, liste_courses_service, prix_api):
         """
-        Vérifie la soustraction des ingrédients disponibles (inventaire) sur les quantités à acheter.
+        Vérifie la soustraction des ingrédients disponibles (inventaire) sur les quantités
+        à acheter.
         """
         ingredients = [
             {"nom": "tomates", "quantite": 5, "unite": "pièces"},
@@ -178,8 +181,8 @@ class TestListeCoursesService:
         self, liste_courses_service, prix_api
     ):
         """
-        Vérifie que si l'inventaire contient plus que le besoin, la quantité à acheter n'est pas négative
-        (0 ou suppression de l'article selon le comportement du BO).
+        Vérifie que si l'inventaire contient plus que le besoin, la quantité à acheter n'est pas
+        négative (0 ou suppression de l'article selon le comportement du BO).
         """
         ingredients = [{"nom": "tomates", "quantite": 2, "unite": "pièces"}]
         disponibles = [{"nom": "tomates", "quantite": 10, "unite": "pièces"}]
