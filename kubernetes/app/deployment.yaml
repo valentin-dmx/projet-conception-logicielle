@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      containers:
+        - name: application
+          image: yazidtl/projet-backend:latest
+          imagePullPolicy: Always
+          workingDir: /app
+          command: ["uvicorn"]
+          args: ["main:app", "--host", "0.0.0.0", "--port", "8000"]
+          resources:
+            limits:
+              memory: "200Mi"
+              cpu: "300m"
+          envFrom:
+            - configMapRef:
+                name: configuration-application
+          ports:
+            - containerPort: 8000
