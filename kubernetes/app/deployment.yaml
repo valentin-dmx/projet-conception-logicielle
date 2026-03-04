@@ -16,6 +16,9 @@ spec:
         - name: application
           image: yazidtl/projet-backend:latest
           imagePullPolicy: Always
+          workingDir: /app
+          command: ["uvicorn"]
+          args: ["main:app", "--host", "0.0.0.0", "--port", "8000"]
           resources:
             limits:
               memory: "200Mi"
