@@ -5,7 +5,8 @@ from dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
 
 class SpoonacularDAOPlanningRepas(SpoonacularDAO):
     """
-    Data Access Object (DAO) pour interagir avec l'API Spoonacular spécifiquement pour les plannings de repas.
+    Data Access Object (DAO) pour interagir avec l'API Spoonacular spécifiquement
+    pour les plannings de repas.
     Fournit des méthodes pour créer et gérer les plannings de repas.
     """
 
@@ -20,7 +21,6 @@ class SpoonacularDAOPlanningRepas(SpoonacularDAO):
         calories: int = None,
         regime: str = None,
     ) -> PlanningRepas:
-
         if nb_jours <= 0:
             raise ValueError("nb_jours doit être > 0")
 

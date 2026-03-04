@@ -37,7 +37,6 @@ class PlanningRepasDTO:
 
     @staticmethod
     def bo_to_dto(planning: PlanningRepas) -> "PlanningRepasDTO":
-
         jours_dto = []
 
         for jour in planning.jours:
