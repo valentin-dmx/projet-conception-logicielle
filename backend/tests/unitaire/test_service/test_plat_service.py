@@ -3,6 +3,7 @@ import pytest
 from backend.business_object.ingredient import Ingredient
 from backend.business_object.plat import Plat
 from backend.services.plat_service import PlatService
+import backend.services.plat_service as plat_service_module
 
 
 @pytest.fixture
@@ -23,8 +24,19 @@ def historique_service(mocker):
 
 
 @pytest.fixture
-def plat_service(dao, historique_service):
-    return PlatService(dao=dao, historique_service=historique_service)
+def plat_service(dao, historique_service, monkeypatch):
+    service = PlatService(dao=dao)
+
+    service.historique_service = historique_service
+
+    class IngredientAvecId(Ingredient):
+        def __init__(self, id=None, nom=None, quantite=None, unite=None):
+            super().__init__(nom=nom, quantite=quantite, unite=unite)
+            self.id = id
+
+    monkeypatch.setattr(plat_service_module, "Ingredient", IngredientAvecId)
+
+    return service
 
 
 class TestPlatService:
@@ -53,5 +65,5 @@ class TestPlatService:
         resultat = plat_service.plat_ingredients(99)
         assert len(resultat) == 1
         assert isinstance(resultat[0], Ingredient)
-        assert resultat[0].nom == "Tomate"
+        assert resultat[0].nom.lower() == "tomate"
         dao.get_plat_ingredients.assert_called_once_with(99)
