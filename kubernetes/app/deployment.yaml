@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: application
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: application
@@ -13,15 +14,17 @@ spec:
     spec:
       containers:
         - name: application
-          image: ragatzino/backend-demo-conception-logicielle:latest # Lien de l'image que vous avez construit pour votre brique applicative
+          image: yazidtl/projet-backend:latest
           imagePullPolicy: Always
+          workingDir: /app
+          command: ["uvicorn"]
+          args: ["main:app", "--host", "0.0.0.0", "--port", "8000"]
           resources:
             limits:
               memory: "200Mi"
               cpu: "300m"
-          # Permet de charger les variables d'environnement dans votre application via le remplissage d'une ressources "cle" "valeur" kubernetes, le configmap.
           envFrom:
             - configMapRef:
-                name: configuration-application # ici le nom de votre configmap
+                name: configuration-application
           ports:
-            - containerPort: 8000 # Port du serveur lancé, voir votre image docker
+            - containerPort: 8000

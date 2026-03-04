@@ -4,6 +4,7 @@ metadata:
   name: configuration-application
 data:
   VARIABLE_ENVIRONNEMENT1: variable_environnement
+  APP_TITLE: "NutriPlan"
 
   # exemple api python
   # API_URL: la valeur de l'url
