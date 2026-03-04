@@ -16,7 +16,7 @@ from dto.utilisateur_dto import (
 
 utilisateur_router = APIRouter(
     prefix="/utilisateurs",
-    tags=["utilisateurs"],
+    tags=["Utilisateurs"],
 )
 
 
