@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from backend.web.liste_courses_router import router as liste_courses_router
+from web.liste_courses_router import router as liste_courses_router
 
 
 app = FastAPI()
