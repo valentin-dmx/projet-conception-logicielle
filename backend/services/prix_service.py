@@ -1,4 +1,4 @@
-from backend.dao.open_food_facts_dao import OpenFoodFactsDao
+from dao.open_food_facts_dao import OpenFoodFactsDao
 
 
 class PrixService:

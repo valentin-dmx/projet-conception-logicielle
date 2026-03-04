@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
-from backend.business_object.jour_repas import JourRepas
-from backend.business_object.planning_repas import PlanningRepas
-from backend.dto.jour_repas_dto import JourRepasDTO
+from business_object.jour_repas import JourRepas
+from business_object.planning_repas import PlanningRepas
+from dto.jour_repas_dto import JourRepasDTO
 
 
 class PlanningRepasDTO(BaseModel):
