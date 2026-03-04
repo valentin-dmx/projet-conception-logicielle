@@ -1,5 +1,5 @@
-from backend.business_object.planning_repas import PlanningRepas
-from backend.dao.spoonacular_dao.spoonacular_dao_planning_repas import (
+from business_object.planning_repas import PlanningRepas
+from dao.spoonacular_dao.spoonacular_dao_planning_repas import (
     SpoonacularDAOPlanningRepas,
 )
 

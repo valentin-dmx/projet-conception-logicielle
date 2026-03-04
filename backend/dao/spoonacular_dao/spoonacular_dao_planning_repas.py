@@ -1,5 +1,5 @@
-from backend.dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
-from backend.dto.planning_repas_dto import PlanningRepasDTO
+from dao.spoonacular_dao.spoonacular_dao import SpoonacularDAO
+from dto.planning_repas_dto import PlanningRepasDTO
 
 
 class SpoonacularDAOPlanningRepas(SpoonacularDAO):
