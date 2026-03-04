@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configuration-application
+data:
+  VARIABLE_ENVIRONNEMENT1: variable_environnement
+
+  # exemple api python
+  # API_URL: la valeur de l'url
+  # API_KEY: la valeur de la cle (attention a pas versionner ou dans un autre dépôt privé)
+
+  # exemple appli vite
+  # VITE_API_URL: https://backend-conception-logicielle.kub.sspcloud.fr
+  # VITE_ENVIRONNEMENT: sspcloud-pd
+  # __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: "frontend-conception-logicielle.kub.sspcloud.fr"
