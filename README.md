@@ -90,12 +90,21 @@ cd backend
 uv run main.py
 ```
 
+<<<<<<< HEAD
 L'API sera accessible sur http://localhost:8000.
 (Si vous utilisez un service comme le VSCode d'un Datalab, pensez à ouvrir le port 8000 et à utiliser le lien fourni dans la documentation à l'ouverture du service plutôt que localhost).
 
 Documentation de l'API (une fois lancée) :
 
 Swagger UI : http://localhost:8000/docs
+=======
+L'API sera accessible sur http://localhost:5000.
+(Si vous utilisez un service comme le VSCode d'un Datalab, pensez à ouvrir le port 5000 et à utiliser le lien fourni dans la documentation à l'ouverture du service plutôt que localhost).
+
+Documentation de l'API (une fois lancée) :
+
+Swagger UI : http://localhost:5000/docs
+>>>>>>> origin/Kubernetes
 
 ## Lancer les tests
 
