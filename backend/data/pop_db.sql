@@ -1,10 +1,11 @@
 -----------------------------------------------------
--- Insertion des utilisateurs
+-- Insertion des utilisateurs (ids auto-générés)
 -----------------------------------------------------
-INSERT INTO utilisateur (nom_utilisateur)
+INSERT INTO utilisateur (nom_utilisateur, role)
 VALUES 
-    ('dupont'),
-    ('martin');
+    ('admin', 'admin'),
+    ('dupont', 'user'),
+    ('martin', 'user');
 
 -----------------------------------------------------
 -- Insertion des credentials (identifiants)
@@ -12,5 +13,6 @@ VALUES
 -----------------------------------------------------
 INSERT INTO credentials (id, mot_de_passe_hash, sel)
 VALUES
-    (1, 'mdp1', ''),
-    (2, 'mdp2', '');
+    (1, 'nutriplan', ''),
+    (2, 'mdp123', ''),
+    (3, 'mdp123', '');

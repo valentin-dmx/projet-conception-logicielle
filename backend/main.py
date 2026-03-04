@@ -1,11 +1,11 @@
 import os
 
 from fastapi import FastAPI
-from web.systeme_router import systeme_router
-from web.utilisateur_router import utilisateur_router
 
 from config.app_config import add_cors_middleware
 from web.liste_courses_router import router as liste_courses_router
+from web.systeme_router import systeme_router
+from web.utilisateur_router import utilisateur_router
 
 
 app_title = os.getenv("APP_TITLE", "NutriPlan")
@@ -20,4 +20,5 @@ add_cors_middleware(app)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    uvicorn.run(app, host="0.0.0.0", port=5000)
