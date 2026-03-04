@@ -62,6 +62,8 @@ Vous devez avoir installé uv.
 
 Clonez le dépôt ici présent.
 
+Créez une base de données PostgreSQL (par exemple à l'aide d'un Datalab).
+
 ## Variables d'environnement
 
 Vous devez définir les variables pour connecter l'application à votre base de données PostgreSQL ainsi qu'à l'API Spoonacular.
@@ -88,12 +90,12 @@ cd backend
 uv run main.py
 ```
 
-L'API sera accessible sur http://localhost:5000.
-(Si vous utilisez un service comme le VSCode d'un Datalab, pensez à ouvrir le port 5000 et à utiliser le lien fourni dans la documentation à l'ouverture du service plutôt que localhost).
+L'API sera accessible sur http://localhost:8000.
+(Si vous utilisez un service comme le VSCode d'un Datalab, pensez à ouvrir le port 8000 et à utiliser le lien fourni dans la documentation à l'ouverture du service plutôt que localhost).
 
 Documentation de l'API (une fois lancée) :
 
-Swagger UI : http://localhost:5000/docs
+Swagger UI : http://localhost:8000/docs
 
 ## Lancer les tests
 

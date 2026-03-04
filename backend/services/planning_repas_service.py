@@ -1,18 +1,24 @@
 from business_object.planning_repas import PlanningRepas
+from dao.planning_dao import PlanningDAO
 from dao.spoonacular_dao.spoonacular_dao_planning_repas import (
     SpoonacularDAOPlanningRepas,
 )
+from dto.planning_repas_dto import PlanningRepasDTO
 
 
-class PlanningRepasService(SpoonacularDAOPlanningRepas):
+MOMENTS = ["petit_dejeuner", "dejeuner", "diner"]
+
+
+class PlanningRepasService:
     """
     Service pour gérer les plannings de repas.
     """
 
-    def __init__(self, planning_repas_dao):
-        self.planning_repas_dao = planning_repas_dao
+    def __init__(self):
+        self.planning_repas_dao = PlanningDAO()
+        self.spoonacular_dao = SpoonacularDAOPlanningRepas()
 
-    def creer_planning_repas_visiteur(self, nb_jours: int) -> PlanningRepas:
+    def creer_planning_repas(self, nb_jours: int) -> PlanningRepas:
         """
         Crée un nouveau planning de repas avec le nombre de jours spécifié.
         Params
@@ -24,59 +30,9 @@ class PlanningRepasService(SpoonacularDAOPlanningRepas):
             PlanningRepas
                 Le planning de repas créé.
         """
-        return self.planning_repas_dao.creer_planning_repas(nb_jours)
-
-    def compter_plannings_repas_utilisateur(self, id_utilisateur: int) -> int:
-        """
-        Compte le nombre de plannings de repas associés à un utilisateur.
-        Params
-        ----------
-            id_utilisateur: int
-                L'ID de l'utilisateur dont on veut compter les plannings de repas.
-        Return
-        ----------
-            int
-                Le nombre de plannings de repas associés à l'utilisateur fourni.
-        """
-        return self.planning_repas_dao.compter_plannings_repas_utilisateur(
-            id_utilisateur
-        )
-
-    def voir_planning_repas(
-        self, id_utilisateur: int, id_planning: int
-    ) -> PlanningRepas:
-        """
-        Récupère un planning de repas par son ID.
-        Params
-        ----------
-            id_utilisateur: int
-                L'ID de l'utilisateur auquel le planning de repas est associé.
-            id_planning: int
-                L'ID du planning de repas à récupérer.
-        Return
-        ----------
-            PlanningRepas
-                Le planning de repas correspondant à l'ID fourni.
-        """
-        return self.planning_repas_dao.voir_planning_repas(id_utilisateur, id_planning)
-
-    def voir_tous_planning_repas_utilisateur(
-        self, id_utilisateur: int
-    ) -> list[PlanningRepas]:
-        """
-        Récupère tous les plannings de repas associés à un utilisateur.
-        Params
-        ----------
-            id_utilisateur: int
-                L'ID de l'utilisateur dont on veut récupérer les plannings de repas.
-        Return
-        ----------
-            list[PlanningRepas]
-                Une liste de plannings de repas associés à l'utilisateur fourni.
-        """
-        return self.planning_repas_dao.voir_tous_planning_repas_utilisateur(
-            id_utilisateur
-        )
+        planning_dto = self.spoonacular_dao.generer_planning(nb_jours)
+        planning_repas = PlanningRepasDTO.dto_to_bo(planning_dto)
+        return planning_repas
 
     def creer_planning_repas_utilisateur(
         self, id_utilisateur: int, nb_jours: int, nom_planning: str = None
@@ -96,39 +52,75 @@ class PlanningRepasService(SpoonacularDAOPlanningRepas):
                 PlanningRepas
                     Le planning de repas créé.
         """
-        planning_dto = self.planning_repas_dao.creer_planning_repas(
-            nb_jours, id_utilisateur=id_utilisateur
-        )
-        planning = planning_dto.to_planning_repas()
-        planning.id = self.compter_plannings_repas_utilisateur(id_utilisateur) + 1
-        if nom_planning:
-            self.planning_repas_dao.renommer_planning_repas_utilisateur(
-                id_utilisateur, planning.id, nom_planning
-            )
-            planning.nom = nom_planning
-        return planning
+        planning_dto = self.spoonacular_dao.generer_planning(nb_jours)
+        planning_repas = PlanningRepasDTO.dto_to_bo(planning_dto)
 
-    def creer_planning_repas_vide_utilisateur(
-        self, id_utilisateur: int, nb_jours: int
-    ) -> PlanningRepas:
+        planning_repas.id_utilisateur = id_utilisateur
+        if nom_planning:
+            planning_repas.nom = nom_planning
+
+        planning_sauvegarde = (
+            self.planning_repas_dao.ajouter_planning_repas_utilisateur(planning_repas)
+        )
+
+        return planning_sauvegarde
+
+    def compter_plannings_repas_utilisateur(self, id_utilisateur: int) -> int:
         """
-        Crée un nouveau planning de repas vide pour un utilisateur avec le nombre de jours spécifié.
+        Compte le nombre de plannings de repas associés à un utilisateur.
         Params
         ----------
             id_utilisateur: int
-                L'ID de l'utilisateur pour lequel créer le planning de repas.
-            nb_jours: int
-                Le nombre de jours pour le planning de repas.
+                L'ID de l'utilisateur dont on veut compter les plannings de repas.
+        Return
+        ----------
+            int
+                Le nombre de plannings de repas associés à l'utilisateur fourni.
+        """
+        nb_plannings: int = self.planning_repas_dao.compter_plannings_repas_utilisateur(
+            id_utilisateur
+        )
+        return nb_plannings
+
+    def voir_planning_repas(
+        self, id_utilisateur: int, id_planning: int
+    ) -> PlanningRepas:
+        """
+        Récupère un planning de repas par son ID.
+        Params
+        ----------
+            id_utilisateur: int
+                L'ID de l'utilisateur auquel le planning de repas est associé.
+            id_planning: int
+                L'ID du planning de repas à récupérer.
         Return
         ----------
             PlanningRepas
-                Le planning vide créé.
+                Le planning de repas correspondant à l'ID fourni.
         """
-        planning_dto = self.planning_repas_dao.creer_planning_repas(
-            nb_jours=nb_jours, id_utilisateur=id_utilisateur, vide=True
+        planning_repas: PlanningRepas = self.planning_repas_dao.voir_planning_repas(
+            id_utilisateur, id_planning
         )
-        planning = planning_dto.to_planning_repas()
-        return planning
+        return planning_repas
+
+    def voir_tous_planning_repas_utilisateur(
+        self, id_utilisateur: int
+    ) -> list[PlanningRepas]:
+        """
+        Récupère tous les plannings de repas associés à un utilisateur.
+        Params
+        ----------
+            id_utilisateur: int
+                L'ID de l'utilisateur dont on veut récupérer les plannings de repas.
+        Return
+        ----------
+            list[PlanningRepas]
+                Une liste de plannings de repas associés à l'utilisateur fourni.
+        """
+        plannings_repas: list[PlanningRepas] = (
+            self.planning_repas_dao.voir_tous_planning_repas_utilisateur(id_utilisateur)
+        )
+        return plannings_repas
 
     def modifier_planning_repas_utilisateur(
         self,
@@ -149,7 +141,7 @@ class PlanningRepasService(SpoonacularDAOPlanningRepas):
             jour_modif: int
                 Le jour du planning de repas à modifier.
             moment_modif: str
-                Le moment de la journée du planning de repas à modifier (ex: "matin", "midi", "soir").
+                Le moment de la journée du planning de repas à modifier (ex: "petit_dejeuner", "dejeuner", "diner").
             id_plat_modif: int
                 L'ID du plat à associer au jour et moment modifiés du planning de repas.
         Return
@@ -157,12 +149,18 @@ class PlanningRepasService(SpoonacularDAOPlanningRepas):
                 PlanningRepas
                     Le planning de repas modifié.
         """
+
+        if moment_modif not in MOMENTS:
+            raise ValueError(
+                "Moment de la journée invalide. Doit être 'petit_dejeuner', 'dejeuner' ou 'diner'."
+            )
+
         planning_repas_dto = (
             self.planning_repas_dao.modifier_planning_repas_utilisateur(
                 id_utilisateur, planning_id, jour_modif, moment_modif, id_plat_modif
             )
         )
-        planning_repas = planning_repas_dto.to_planning_repas()
+        planning_repas = PlanningRepasDTO.dto_to_bo(planning_repas_dto)
         return planning_repas
 
     def supprimer_planning_repas_utilisateur(
@@ -195,7 +193,7 @@ class PlanningRepasService(SpoonacularDAOPlanningRepas):
                 id_utilisateur, planning_id
             )
         )
-        planning_repas = planning_repas_dto.to_planning_repas()
+        planning_repas = PlanningRepasDTO.dto_to_bo(planning_repas_dto)
         return planning_repas
 
     def supprimer_jour_planning_repas_utilisateur(
@@ -209,7 +207,7 @@ class PlanningRepasService(SpoonacularDAOPlanningRepas):
                 id_utilisateur, planning_id
             )
         )
-        planning_repas = planning_repas_dto.to_planning_repas()
+        planning_repas = PlanningRepasDTO.dto_to_bo(planning_repas_dto)
         return planning_repas
 
     def renommer_planning_repas_utilisateur(

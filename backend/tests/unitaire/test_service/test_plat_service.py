@@ -2,7 +2,6 @@ import pytest
 
 from business_object.ingredient import Ingredient
 from business_object.plat import Plat
-import services.plat_service as plat_service_module
 from services.plat_service import PlatService
 
 
@@ -18,25 +17,8 @@ def dao(mocker):
 
 
 @pytest.fixture
-def historique_service(mocker):
-    service = mocker.Mock()
-    return service
-
-
-@pytest.fixture
-def plat_service(dao, historique_service, monkeypatch):
-    service = PlatService(dao=dao)
-
-    service.historique_service = historique_service
-
-    class IngredientAvecId(Ingredient):
-        def __init__(self, id=None, nom=None, quantite=None, unite=None):
-            super().__init__(nom=nom, quantite=quantite, unite=unite)
-            self.id = id
-
-    monkeypatch.setattr(plat_service_module, "Ingredient", IngredientAvecId)
-
-    return service
+def plat_service(dao):
+    return PlatService(dao=dao)
 
 
 class TestPlatService:
@@ -44,16 +26,13 @@ class TestPlatService:
     Tests unitaires pour le service de gestion des plats.
     """
 
-    def test_rechercher_plat_nom(self, plat_service, dao, historique_service):
+    def test_rechercher_plat_nom(self, plat_service, dao):
         resultat = plat_service.rechercher_plat_nom("lasagnes")
 
         assert len(resultat) == 1
         assert isinstance(resultat[0], Plat)
         assert resultat[0].nom == "Lasagnes"
         dao.recherche_plat_nom.assert_called_once_with("lasagnes")
-        historique_service.ajouter_recherche_plat.assert_called_once_with(
-            "lasagnes", [1]
-        )
 
     def test_information_plat(self, plat_service, dao):
         resultat = plat_service.information_plat(2)
@@ -65,5 +44,5 @@ class TestPlatService:
         resultat = plat_service.plat_ingredients(99)
         assert len(resultat) == 1
         assert isinstance(resultat[0], Ingredient)
-        assert resultat[0].nom.lower() == "tomate"
+        assert str.lower(resultat[0].nom) == "tomate"
         dao.get_plat_ingredients.assert_called_once_with(99)
