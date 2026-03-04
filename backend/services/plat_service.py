@@ -1,6 +1,6 @@
-from backend.business_object.ingredient import Ingredient
-from backend.business_object.plat import Plat
-from backend.dao.spoonacular_dao.spoonacular_dao_plat import SpoonacularDAOPlat
+from business_object.ingredient import Ingredient
+from business_object.plat import Plat
+from dao.spoonacular_dao.spoonacular_dao_plat import SpoonacularDAOPlat
 
 
 # from backend.services.historique_service import HistoriqueService
