@@ -5,7 +5,8 @@ DROP TABLE IF EXISTS utilisateur CASCADE ;
 
 CREATE TABLE utilisateur (
     id                      SERIAL PRIMARY KEY,
-    nom_utilisateur         VARCHAR(30) UNIQUE NOT NULL
+    nom_utilisateur         VARCHAR(30) UNIQUE NOT NULL,
+    role                    VARCHAR(20) DEFAULT 'user'
 );
 
 -----------------------------------------------------

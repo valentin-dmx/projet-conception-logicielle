@@ -20,3 +20,9 @@ class InvalidPasswordError(Exception):
     """Levé lorsque le mot de passe ne correspond pas à un utilisateur"""
 
     pass
+
+
+class UtilisateurAlreadyExistsError(Exception):
+    """Levée si le nom d'utilisateur existe déjà."""
+
+    pass
