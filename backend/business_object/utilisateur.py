@@ -1,7 +1,8 @@
 class Utilisateur:
-    def __init__(self, id: int | None, nom_utilisateur: str):
+    def __init__(self, id: int | None, nom_utilisateur: str, role: str = "user"):
         self.id = id
         self.nom_utilisateur = nom_utilisateur
+        self.role = role
 
     def __repr__(self) -> str:
         return f"Utilisateur(id={self.id!r}, nom_utilisateur={self.nom_utilisateur!r})"

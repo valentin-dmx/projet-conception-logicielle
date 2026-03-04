@@ -35,12 +35,13 @@ class UtilisateurDao:
             # Étape 1 : création de l'utilisateur (id auto-généré)
             cursor.execute(
                 """
-                INSERT INTO utilisateur (nom_utilisateur)
-                VALUES (%(nom_utilisateur)s)
+                INSERT INTO utilisateur (nom_utilisateur, role)
+                VALUES (%(nom_utilisateur)s, %(role)s)
                 RETURNING id;
                 """,
                 {
                     "nom_utilisateur": utilisateur.nom_utilisateur,
+                    "role": utilisateur.role,
                 },
             )
             res = cursor.fetchone()
@@ -91,6 +92,7 @@ class UtilisateurDao:
             utilisateur = Utilisateur(
                 id=res["id"],
                 nom_utilisateur=res["nom_utilisateur"],
+                role=res["role"],
             )
             return utilisateur
         return None
@@ -119,6 +121,7 @@ class UtilisateurDao:
             utilisateur = Utilisateur(
                 id=res["id"],
                 nom_utilisateur=res["nom_utilisateur"],
+                role=res["role"],
             )
             return utilisateur
         return None
@@ -146,6 +149,7 @@ class UtilisateurDao:
                 utilisateur = Utilisateur(
                     id=row["id"],
                     nom_utilisateur=row["nom_utilisateur"],
+                    role=row["role"],
                 )
                 liste_utilisateurs.append(utilisateur)
 
@@ -245,8 +249,8 @@ class UtilisateurDao:
             # Récupérer l'utilisateur et son mot de passe haché via jointure
             cursor.execute(
                 """
-                SELECT u.id, u.nom_utilisateur,
-                    c.mot_de_passe_hash, c.sel
+                SELECT u.id, u.nom_utilisateur, u.role,
+                c.mot_de_passe_hash, c.sel
                 FROM utilisateur u
                 JOIN credentials c ON u.id = c.id
                 WHERE u.nom_utilisateur = %(nom_utilisateur)s;
@@ -272,6 +276,7 @@ class UtilisateurDao:
         utilisateur = Utilisateur(
             id=res["id"],
             nom_utilisateur=res["nom_utilisateur"],
+            role=res["role"],
         )
 
         return utilisateur
