@@ -1,5 +1,9 @@
-from backend.business_object.planning_repas import PlanningRepas
-from backend.dto.planning_repas_dto import PlanningRepasDTO
+from business_object.planning_repas import PlanningRepas
+from dao.planning_dao import PlanningDAO
+from dao.spoonacular_dao.spoonacular_dao_planning_repas import (
+    SpoonacularDAOPlanningRepas,
+)
+from dto.planning_repas_dto import PlanningRepasDTO
 
 
 MOMENTS = ["petit_dejeuner", "dejeuner", "diner"]
@@ -10,9 +14,9 @@ class PlanningRepasService:
     Service pour gérer les plannings de repas.
     """
 
-    def __init__(self, planning_repas_dao, spoonacular_dao):
-        self.planning_repas_dao = planning_repas_dao
-        self.spoonacular_dao = spoonacular_dao
+    def __init__(self):
+        self.planning_repas_dao = PlanningDAO()
+        self.spoonacular_dao = SpoonacularDAOPlanningRepas()
 
     def creer_planning_repas(self, nb_jours: int) -> PlanningRepas:
         """

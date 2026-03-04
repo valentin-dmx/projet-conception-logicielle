@@ -1,8 +1,7 @@
 import logging
 
-from dao.db_connection import DBConnection
-
-from backend.business_object.planning_repas import PlanningRepas
+from business_object.planning_repas import PlanningRepas
+from dao.configuration.db_connection import DBConnection
 
 
 MOMENTS = ["petit_dejeuner", "dejeuner", "diner"]

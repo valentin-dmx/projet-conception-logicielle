@@ -3,7 +3,8 @@ class Ingredient:
     Ingrédient métier : nom + quantité + unité
     """
 
-    def __init__(self, nom: str, quantite: float, unite: str):
+    def __init__(self, nom: str, quantite: float, unite: str, id: int | None = None):
+        self.id = id
         self.nom = str(nom).strip().lower()
         self.quantite = float(quantite)
         self.unite = str(unite).strip().lower()

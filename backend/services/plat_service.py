@@ -3,9 +3,6 @@ from business_object.plat import Plat
 from dao.spoonacular_dao.spoonacular_dao_plat import SpoonacularDAOPlat
 
 
-# from backend.services.historique_service import HistoriqueService
-
-
 class PlatService(SpoonacularDAOPlat):
     """
     Service de gestion des plats.
@@ -13,8 +10,6 @@ class PlatService(SpoonacularDAOPlat):
 
     def __init__(self, dao=None):
         self.dao = dao or SpoonacularDAOPlat()
-        # self.historique_service = historique_service or HistoriqueService()
-        # en argument: historique_service=None
 
     def rechercher_plat_nom(self, requete: str) -> list[Plat]:
         """
@@ -31,9 +26,7 @@ class PlatService(SpoonacularDAOPlat):
         """
         plats_dto = self.dao.recherche_plat_nom(requete)
         plats = [Plat(id=plat_dto.id, nom=plat_dto.nom) for plat_dto in plats_dto]
-        id_plats = [plat.id for plat in plats]
 
-        self.historique_service.ajouter_recherche_plat(requete, id_plats)
         return plats
 
     def information_plat(self, plat_id: int) -> Plat:
